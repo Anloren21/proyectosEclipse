@@ -1,5 +1,5 @@
 package basicos;
-
+ 
 public class HolaMundo {
 	/**
 	 * Método de entrada de la aplicación
