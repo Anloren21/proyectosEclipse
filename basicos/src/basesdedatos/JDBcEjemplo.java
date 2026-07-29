@@ -15,64 +15,99 @@ public class JDBcEjemplo {
 	
 	private static Connection con;
 	
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) {
 		//Scanner sc = new Scanner(System.in);
+		//declaración de variables 
+		PreparedStatement pst = null;
+		ResultSet rs = null;
 		
-		con = DriverManager.getConnection(URL);  //Carretera
-		//ResultSet rs;
-		listado("SELECT");
-		
-		//System.out.print("Dime el id: ");
-		Long id = Long.parseLong("2");//sc.nextLine()
-		
-		PreparedStatement pst = con.prepareStatement(SQL_SELECT_ID);
-		pst.setLong(1, id);
-		
-		ResultSet rs = pst.executeQuery(); //Cargamento
-		
-		while (rs.next()) { //De uno en uno mientras haya carga que procesar
-			System.out.printf("%2s %-10s %5s\n", rs.getString("id"), rs.getString("nombre"), rs.getString("precio"));
-		} 
-		
-		rs.close();
-		pst.close();
-		
-		//Insertar un nuevo registro
-		pst = con.prepareStatement(SQL_INSERT);
-		
-		pst.setString(1, "NUEVO");
-		pst.setBigDecimal(2, new BigDecimal("1234.12"));
-		
-		pst.executeUpdate();
-		pst.close();
-		
-		listado("INSERT");
-		
-		//Modificar un nuevo registro
-		pst = con.prepareStatement(SQL_UPDATE);
-		
-		pst.setString(1, "MODIFICADO");
-		pst.setBigDecimal(2, new BigDecimal("4321.12"));
-		pst.setLong(3, 5);
-		
-		pst.executeUpdate();
-		pst.close();
-		
-		listado("UPDATE");
-		
-		//Eliminar un nuevo registro
-		pst = con.prepareStatement(SQL_DELETE);
-		
-		pst.setLong(1, 5);
-		
-		pst.executeUpdate();
-		pst.close();
-		
-		listado("DELETE");
-		
-		resetearId();
-		
-		con.close();
+		try {
+			con = DriverManager.getConnection(URL);  //Carretera
+			//ResultSet rs;
+			listado("SELECT");
+			
+			//System.out.print("Dime el id: ");
+			Long id = Long.parseLong("2");//sc.nextLine()
+			
+			pst = con.prepareStatement(SQL_SELECT_ID);
+			pst.setLong(1, id);
+			
+			rs = pst.executeQuery(); //Cargamento
+			
+			while (rs.next()) { //De uno en uno mientras haya carga que procesar
+				System.out.printf("%2s %-10s %5s\n", rs.getString("id"), rs.getString("nombre"), rs.getString("precio"));
+			} 
+			
+			pst.close();
+			
+			//Insertar un nuevo registro
+			pst = con.prepareStatement(SQL_INSERT);
+			
+			pst.setString(1, "NUEVO");
+			pst.setBigDecimal(2, new BigDecimal("1234.12"));
+			
+			pst.executeUpdate();
+			pst.close();
+			
+			listado("INSERT");
+			
+			//Modificar un nuevo registro
+			pst = con.prepareStatement(SQL_UPDATE);
+			
+			pst.setString(1, "MODIFICADO");
+			pst.setBigDecimal(2, new BigDecimal("4321.12"));
+			pst.setLong(3, 5);
+			
+			pst.executeUpdate();
+			pst.close();
+			
+			listado("UPDATE");
+			
+			//Eliminar un nuevo registro
+			pst = con.prepareStatement(SQL_DELETE);
+			
+			pst.setLong(1, 5);
+			
+			pst.executeUpdate();
+			pst.close();
+			
+			listado("DELETE");
+			
+			resetearId();
+			
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			System.out.println("No se ha podido convertir el texto a nº");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Ha habido un problema con la base de datos");
+			System.out.println(e.getLocalizedMessage());
+		} finally {
+			if(rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("No se ha podido cerrar el ResultSet");
+				}				
+			}
+			if(pst != null) {
+				try {
+					pst.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("No se ha podido cerrar la sentencia");
+				}				
+			}
+			if(con!= null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					System.out.println("No se ha podido cerrar la conexión");
+				}				
+			}
+		}
 	}
 
 	private static void listado(String titulo) throws SQLException {
