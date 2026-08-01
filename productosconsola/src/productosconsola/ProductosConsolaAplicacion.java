@@ -1,13 +1,15 @@
 package productosconsola;
 
-import java.util.Scanner;
+//import java.util.Scanner;
 import java.math.BigDecimal;
 import java.sql.*;
 
+import static bibliotecas.Consola.*;
+
 public class ProductosConsolaAplicacion {
+	//	Refactorizaciones
 	private static final int OPCION_SALIR = 0;
 
-	//	Refactorizaciones
 	private static final String JDBC_URL = "jdbc:sqlite:productosconsola.db";
 
 	private static final String FORMATO_CABECERAS = "%2s %-20s %12s\n";
@@ -21,7 +23,7 @@ public class ProductosConsolaAplicacion {
 	private static final String SQL_UPDATE_ID = "UPDATE productos SET nombre=?, precio=? WHERE id=?";
 	private static final String SQL_DELETE_ID = "DELETE FROM productos WHERE id=?";
 
-	private static final Scanner sc = new Scanner(System.in);
+	
 	private static Connection con = null;
 	
 //	Programa principal
@@ -41,9 +43,7 @@ public class ProductosConsolaAplicacion {
 		} catch (NumberFormatException | SQLException e) {
 			System.out.println("Error no controlado en la app");
 			System.out.println(e.getMessage());
-		} finally {
-			sc.close();
-			
+		} finally {			
 			if (con != null) {
 				try {
 					con.close();
@@ -252,22 +252,5 @@ public class ProductosConsolaAplicacion {
 		System.out.printf(FORMATO_REGISTRO, "Id", rs.getLong("id"));
 		System.out.printf(FORMATO_REGISTRO, "Nombre", rs.getString("nombre"));
 		System.out.printf(FORMATO_REGISTRO, "Precio", rs.getBigDecimal("precio"));
-	}
-
-	private static String pedirString(String mensaje) {
-		System.out.print(mensaje + ": ");
-		return sc.next();
-	}
-	
-	private static Long pedirLong(String mensaje) {
-		return Long.parseLong(pedirString(mensaje));
-	}
-	
-	private static BigDecimal pedirBigDecimal(String mensaje) {
-		return new BigDecimal(pedirString(mensaje));
-	}
-	
-	private static int pedirInt(String mensaje) {
-		return Integer.parseInt(pedirString(mensaje));
 	}
 }
